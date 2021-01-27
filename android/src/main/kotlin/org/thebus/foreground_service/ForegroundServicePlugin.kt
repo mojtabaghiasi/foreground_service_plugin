@@ -612,8 +612,8 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
 
       try {
 
-        val intent = Intent(context, Utils.getMainActivityClass(context))
-        val pendingIntent = PendingIntent.getActivity(context, 1 , intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val intent = Intent(myAppContext(), Utils.getMainActivityClass(myAppContext()))
+        val pendingIntent = PendingIntent.getActivity(myAppContext(), 0 , intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         newBuilder
                 .setContentTitle("Foreground Service")
