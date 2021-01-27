@@ -66,9 +66,13 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
     //V2 uses FlutterPlugin.onAttachedToEngine
     private var isV1FlutterEmbedding = false
 
+    private var context : Context? = null
+
+
     @JvmStatic
     fun registerWith(registrar: Registrar) {
       isV1FlutterEmbedding = true
+      context = registrar.context()
       initForegroundServicePlugin(registrar.context(), registrar.messenger())
     }
 
@@ -608,12 +612,16 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
 
       try {
 
+        val intent = Intent(context, Utils.getMainActivityClass(context))
+        val pendingIntent = PendingIntent.getActivity(context, 1 , intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
         newBuilder
                 .setContentTitle("Foreground Service")
                 .setContentText("Running")
                 .setOngoing(true)
                 .setOnlyAlertOnce(false)
                 .setShowWhen(false)
+                .setContentIntent(pendingIntent)
                 .setSmallIcon(getHardcodedIconResourceId())
 
         //the "normal" setPriority method will try to rebuild/renotify
