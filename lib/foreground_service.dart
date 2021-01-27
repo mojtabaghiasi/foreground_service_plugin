@@ -252,6 +252,10 @@ class ForegroundServiceNotification {
     await _invokeMainChannel("setNotificationText", <dynamic>[newText]);
   }
 
+  Future<void> setIconDrawable(String newDrawable) async {
+    await _invokeMainChannel("setNotificationIconDrawable", <dynamic>[newDrawable]);
+  }
+
   ///possibly not necessary
   ///in most cases it seems like things are well-behaved
   ///so a few changes at once will still result in only one response

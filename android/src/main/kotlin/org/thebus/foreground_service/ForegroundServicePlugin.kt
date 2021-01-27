@@ -217,6 +217,10 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
 
           //------------------------------
 
+          "setNotificationIconDrawable" ->
+            notificationHelper.iconName = (call.arguments as JSONArray).getString(0)
+          //------------------------------
+
           "startEditNotification"->
             notificationHelper.editModeEnabled = true
 
@@ -582,6 +586,13 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
               myAppContext().packageName
       )
 
+    private fun getHardcodedIconResourceIdwithName(iconName : String): Int =
+            myAppContext().resources.getIdentifier(
+                    iconName,
+                    "drawable",
+                    myAppContext().packageName
+            )
+
     private fun iconResourceIdIsValid(someResourceId: Int): Boolean = someResourceId != 0
     fun hardcodedIconIsAvailable(): Boolean = iconResourceIdIsValid(getHardcodedIconResourceId())
     val hardCodedIconNotFoundErrorMessage = "could not find /res/drawable/$hardcodedIconName;" +
@@ -602,6 +613,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
                 .setContentText("Running")
                 .setOngoing(true)
                 .setOnlyAlertOnce(false)
+                .setShowWhen(false)
                 .setSmallIcon(getHardcodedIconResourceId())
 
         //the "normal" setPriority method will try to rebuild/renotify
@@ -704,6 +716,15 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
       }
       set(newText){
         builder.setContentText(newText)
+        maybeUpdateNotification()
+      }
+
+    var iconName: String
+      get(){
+        return currentNotification.getExtraCompat(NotificationCompat.EXTRA_TEXT) as String? ?: ""
+      }
+      set(iconName){
+        builder.setSmallIcon(getHardcodedIconResourceIdwithName(iconName))
         maybeUpdateNotification()
       }
   }
