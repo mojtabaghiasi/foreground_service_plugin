@@ -612,7 +612,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
 
       try {
 
-        val intent = Intent(myAppContext(), Utils.getMainActivityClass(myAppContext()))
+        val intent = Intent(myAppContext(), Class.forName("MainActivity"))
         val pendingIntent = PendingIntent.getActivity(myAppContext(), 0 , intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         newBuilder
