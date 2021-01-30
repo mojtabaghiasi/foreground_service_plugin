@@ -610,8 +610,15 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
 
       try {
 
-//        val intent = Intent(myAppContext(), Utils.getMainActivityClass(myAppContext()))
-//        val pendingIntent = PendingIntent.getActivity(myAppContext(), 0 , intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val resultIntent = Intent(myAppContext(), Utils.getMainActivityClass(myAppContext()))
+        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(myAppContext()).run {
+          // Add the intent, which inflates the back stack
+          addNextIntentWithParentStack(resultIntent)
+          // Get the PendingIntent containing the entire back stack
+          getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
 
         newBuilder
                 .setContentTitle("Foreground Service")
@@ -620,7 +627,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
                 .setOnlyAlertOnce(true)
                 .setShowWhen(false)
                 .setSound(null )
-//                .setContentIntent(pendingIntent)
+                .setContentIntent(resultPendingIntent)
                 .setSmallIcon(getHardcodedIconResourceId())
 
         //the "normal" setPriority method will try to rebuild/renotify
