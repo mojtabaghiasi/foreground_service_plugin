@@ -617,7 +617,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
                 .setContentTitle("Foreground Service")
                 .setContentText("Running")
                 .setOngoing(true)
-                .setOnlyAlertOnce(false)
+                .setOnlyAlertOnce(true)
                 .setShowWhen(false)
                 .setSound(null )
 //                .setContentIntent(pendingIntent)
