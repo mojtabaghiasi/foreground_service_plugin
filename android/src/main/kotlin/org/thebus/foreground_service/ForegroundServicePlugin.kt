@@ -12,6 +12,8 @@ import androidx.core.app.NotificationCompat
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.embedding.engine.plugins.shim.ShimPluginRegistry
 import io.flutter.plugin.common.*
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -23,7 +25,28 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.ref.SoftReference
 
-class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("org.thebus.ForegroundServicePlugin") {
+private lateinit var activity: Activity
+
+class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("org.thebus.ForegroundServicePlugin") , ActivityAware {
+
+  private lateinit var context: Context
+
+
+  override fun onDetachedFromActivity() {
+    TODO("Not yet implemented")
+  }
+
+  override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+    TODO("Not yet implemented")
+  }
+
+  override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+    activity = binding.activity;
+  }
+
+  override fun onDetachedFromActivityForConfigChanges() {
+    TODO("Not yet implemented")
+  }
 
   companion object {
 
@@ -112,7 +135,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
 
     //instances of the service can come and go
     //but we want the notification data to persist
-    private val notificationHelper = NotificationHelper()
+    private val notificationHelper = NotificationHelper(activity = activity)
 
     //this is used to let the service execute dart handles
     val flutterEngine: FlutterEngine by lazy{
@@ -322,6 +345,8 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
 
   override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
     initForegroundServicePlugin(binding.applicationContext, binding.binaryMessenger)
+    context = binding.applicationContext
+
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -504,7 +529,9 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
 
   //notificationId = arbitrary id for the notification that this builds
   //should NOT be 0
-  class NotificationHelper(val notificationId: Int = 1){
+  class NotificationHelper(val notificationId: Int = 1 , var activity: Activity){
+
+
 
     //things that MUST be set for a notification to function property (probably)
     
@@ -601,6 +628,8 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
             " running a foreground service requires a notification," +
             " and a notification requires an icon"
 
+
+
     //whew, this is ugly
     //basically all the init/default stuff is shoved in here
     //TODO: can this be better?
@@ -611,7 +640,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
       try {
 
 
-        val resultIntent = Intent(myAppContext(), Utils.getMainActivityClass(myAppContext()))
+        val resultIntent = Intent(myAppContext(), activity.javaClass)
         val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(myAppContext()).run {
           // Add the intent, which inflates the back stack
           addNextIntentWithParentStack(resultIntent)
@@ -742,6 +771,9 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
         maybeUpdateNotification()
       }
   }
+
+
+
 }
 
 //enum help class to match with the one on the dart side / translate to & from
