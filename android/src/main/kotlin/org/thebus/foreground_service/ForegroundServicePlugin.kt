@@ -562,12 +562,21 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
             }
             )
 
+    val resultIntent = Intent(myAppContext(), activity.javaClass)
+
+    val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(myAppContext()).run {
+      // Add the intent, which inflates the back stack
+      addNextIntentWithParentStack(resultIntent)
+      // Get the PendingIntent containing the entire back stack
+      getPendingIntent(3, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
     //TODO: is this variable necessary?
     private var currentNotificationInternal: Notification? = null
     val currentNotification: Notification
       get(){
         if(currentNotificationInternal == null){
-          currentNotificationInternal = builder.build()
+          currentNotificationInternal = builder.setContentIntent(resultPendingIntent).build()
         }
         return currentNotificationInternal!!
       }
@@ -594,7 +603,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
     var serviceIsForegrounded = false
     private fun maybeUpdateNotification(){
       if(!editModeEnabled) {
-        currentNotificationInternal = builder.build()
+        currentNotificationInternal = builder.setContentIntent(resultPendingIntent).build()
 
         if(serviceIsForegrounded) {
           notificationManager.notify(this.notificationId, currentNotification)
