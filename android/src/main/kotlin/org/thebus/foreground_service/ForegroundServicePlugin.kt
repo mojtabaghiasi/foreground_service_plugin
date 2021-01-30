@@ -612,7 +612,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
 
       try {
 
-        val intent = Intent(myAppContext(), Class.forName("MainActivity"))
+        val intent = Intent(myAppContext(), Class.forName("MainActivity.class"))
         val pendingIntent = PendingIntent.getActivity(myAppContext(), 0 , intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         newBuilder
@@ -621,6 +621,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
                 .setOngoing(true)
                 .setOnlyAlertOnce(false)
                 .setShowWhen(false)
+                .setSound(null )
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(getHardcodedIconResourceId())
 
