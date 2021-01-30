@@ -3,6 +3,7 @@ package org.thebus.foreground_service
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -562,21 +563,12 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
             }
             )
 
-    val resultIntent = Intent(myAppContext(), activity.javaClass)
-
-    val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(myAppContext()).run {
-      // Add the intent, which inflates the back stack
-      addNextIntentWithParentStack(resultIntent)
-      // Get the PendingIntent containing the entire back stack
-      getPendingIntent(3, PendingIntent.FLAG_UPDATE_CURRENT)
-    }
-
     //TODO: is this variable necessary?
     private var currentNotificationInternal: Notification? = null
     val currentNotification: Notification
       get(){
         if(currentNotificationInternal == null){
-          currentNotificationInternal = builder.setContentIntent(resultPendingIntent).build()
+          currentNotificationInternal = builder.build()
         }
         return currentNotificationInternal!!
       }
@@ -603,7 +595,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
     var serviceIsForegrounded = false
     private fun maybeUpdateNotification(){
       if(!editModeEnabled) {
-        currentNotificationInternal = builder.setContentIntent(resultPendingIntent).build()
+        currentNotificationInternal = builder.build()
 
         if(serviceIsForegrounded) {
           notificationManager.notify(this.notificationId, currentNotification)
@@ -649,15 +641,22 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
       try {
 
 
-        val resultIntent = Intent(myAppContext(), activity.javaClass)
-        resultIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        val pm: PackageManager = myAppContext().packageManager
+        val notificationIntent = pm.getLaunchIntentForPackage(myAppContext().packageName)
 
-        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(myAppContext()).run {
-          // Add the intent, which inflates the back stack
-          addNextIntentWithParentStack(resultIntent)
-          // Get the PendingIntent containing the entire back stack
-          getPendingIntent(3, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
+        val pendingIntent = PendingIntent.getActivity(myAppContext(), 0,
+                notificationIntent, 0)
+
+
+//        val resultIntent = Intent(myAppContext(), activity.javaClass)
+//        resultIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+//
+//        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(myAppContext()).run {
+//          // Add the intent, which inflates the back stack
+//          addNextIntentWithParentStack(resultIntent)
+//          // Get the PendingIntent containing the entire back stack
+//          getPendingIntent(3, PendingIntent.FLAG_UPDATE_CURRENT)
+//        }
 
 
         newBuilder
@@ -667,7 +666,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
                 .setOnlyAlertOnce(true)
                 .setShowWhen(false)
                 .setSound(null )
-                .setContentIntent(resultPendingIntent)
+                .setContentIntent(pendingIntent)
                 .setSmallIcon(getHardcodedIconResourceId())
 
 
