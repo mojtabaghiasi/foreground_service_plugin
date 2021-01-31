@@ -25,28 +25,9 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.ref.SoftReference
 
-private lateinit var activity: Activity
 
-class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("org.thebus.ForegroundServicePlugin") , ActivityAware {
+class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("org.thebus.ForegroundServicePlugin")  {
 
-  private lateinit var context: Context
-
-
-  override fun onDetachedFromActivity() {
-    TODO("Not yet implemented")
-  }
-
-  override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-    TODO("Not yet implemented")
-  }
-
-  override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-    activity = binding.activity;
-  }
-
-  override fun onDetachedFromActivityForConfigChanges() {
-    TODO("Not yet implemented")
-  }
 
   companion object {
 
@@ -135,7 +116,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
 
     //instances of the service can come and go
     //but we want the notification data to persist
-    private val notificationHelper = NotificationHelper(activity = activity)
+    private val notificationHelper = NotificationHelper()
 
     //this is used to let the service execute dart handles
     val flutterEngine: FlutterEngine by lazy{
@@ -345,8 +326,6 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
 
   override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
     initForegroundServicePlugin(binding.applicationContext, binding.binaryMessenger)
-    context = binding.applicationContext
-
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -529,7 +508,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
 
   //notificationId = arbitrary id for the notification that this builds
   //should NOT be 0
-  class NotificationHelper(val notificationId: Int = 1 , var activity: Activity){
+  class NotificationHelper(val notificationId: Int = 1){
 
 
 
@@ -657,7 +636,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setShowWhen(false)
-                .setSound(null )
+                .setSound(null)
                 .setSmallIcon(getHardcodedIconResourceId())
 
 
