@@ -619,15 +619,13 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
       try {
 
 
-//        val resultIntent = Intent(myAppContext(), activity.javaClass)
-//        resultIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-//
-//        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(myAppContext()).run {
-//          // Add the intent, which inflates the back stack
-//          addNextIntentWithParentStack(resultIntent)
-//          // Get the PendingIntent containing the entire back stack
-//          getPendingIntent(3, PendingIntent.FLAG_UPDATE_CURRENT)
-//        }
+        val resultIntent = Intent(myAppContext(), Utils.getMainActivityClass(myAppContext().applicationContext))
+        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(myAppContext().applicationContext).run {
+          // Add the intent, which inflates the back stack
+          addNextIntentWithParentStack(resultIntent)
+          // Get the PendingIntent containing the entire back stack
+          getPendingIntent(34, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
 
 
         newBuilder
@@ -637,6 +635,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
                 .setOnlyAlertOnce(true)
                 .setShowWhen(false)
                 .setSound(null)
+                .setContentIntent(resultPendingIntent)
                 .setSmallIcon(getHardcodedIconResourceId())
 
 
