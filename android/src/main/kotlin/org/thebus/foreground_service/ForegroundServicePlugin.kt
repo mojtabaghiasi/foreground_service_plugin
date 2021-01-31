@@ -3,7 +3,6 @@ package org.thebus.foreground_service
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -641,13 +640,6 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
       try {
 
 
-        val pm: PackageManager = myAppContext().packageManager
-        val notificationIntent = pm.getLaunchIntentForPackage(myAppContext().packageName)
-
-        val pendingIntent = PendingIntent.getActivity(myAppContext(), 0,
-                notificationIntent, 0)
-
-
 //        val resultIntent = Intent(myAppContext(), activity.javaClass)
 //        resultIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
 //
@@ -666,7 +658,6 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
                 .setOnlyAlertOnce(true)
                 .setShowWhen(false)
                 .setSound(null )
-                .setContentIntent(pendingIntent)
                 .setSmallIcon(getHardcodedIconResourceId())
 
 
