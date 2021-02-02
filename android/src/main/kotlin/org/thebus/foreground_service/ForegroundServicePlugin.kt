@@ -76,7 +76,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
     @JvmStatic
     fun registerWith(registrar: Registrar) {
       isV1FlutterEmbedding = true
-//      initForegroundServicePlugin(registrar.context(), registrar.messenger())
+      initForegroundServicePlugin(registrar.context(), registrar.messenger())
     }
 
     //apparently onAttachedToEngine gets called when new instance of plugin is made
@@ -328,7 +328,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
   override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
 
 //    Thread(Runnable {
-//      initForegroundServicePlugin(binding.applicationContext, binding.binaryMessenger)
+      initForegroundServicePlugin(binding.applicationContext, binding.binaryMessenger)
 //      println("testttttttttttttttt")
 //    })
 
