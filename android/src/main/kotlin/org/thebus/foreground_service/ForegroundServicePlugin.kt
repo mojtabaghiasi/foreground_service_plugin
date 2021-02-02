@@ -29,6 +29,7 @@ import java.lang.ref.SoftReference
 class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("org.thebus.ForegroundServicePlugin")  {
 
 
+
   companion object {
 
     private const val LOG_TAG = "ForegroundServicePlugin"
@@ -325,7 +326,9 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
   }
 
   override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-//    initForegroundServicePlugin(binding.applicationContext, binding.binaryMessenger)
+    Thread {
+      initForegroundServicePlugin(binding.applicationContext, binding.binaryMessenger)
+    }
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
