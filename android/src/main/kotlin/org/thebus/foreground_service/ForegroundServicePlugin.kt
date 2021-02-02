@@ -328,7 +328,6 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
   override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
 
     Thread(Runnable {
-      Thread.sleep(1500)
       initForegroundServicePlugin(binding.applicationContext, binding.binaryMessenger)
       println("testttttttttttttttt")
     })
