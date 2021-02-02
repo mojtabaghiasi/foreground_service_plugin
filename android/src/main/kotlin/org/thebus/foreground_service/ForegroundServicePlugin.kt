@@ -325,7 +325,7 @@ class ForegroundServicePlugin: FlutterPlugin, MethodCallHandler, IntentService("
   }
 
   override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-    initForegroundServicePlugin(binding.applicationContext, binding.binaryMessenger)
+//    initForegroundServicePlugin(binding.applicationContext, binding.binaryMessenger)
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
